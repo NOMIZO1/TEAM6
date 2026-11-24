@@ -9,6 +9,9 @@ public class ArrowStick : MonoBehaviour
     [Header("矢の刺さる位置")]
     public Transform stickPoint;
 
+    [Header("ダメージ設定")]
+    public float arrowDamage = 20f;
+
     [Header("刺さったときの設定")]
     public bool destroyRigidbody = false;
 
@@ -28,6 +31,16 @@ public class ArrowStick : MonoBehaviour
         // 指定したタグ以外なら何もしない
         if (!collision.gameObject.CompareTag(targetTag)) return;
 
+        // 敵のEnemyControllerを取得
+        EnemyController enemy =
+            collision.gameObject.GetComponentInParent<EnemyController>();
+
+        // 敵にダメージを与える
+        if (enemy != null)
+        {
+            enemy.TakeDamage(arrowDamage);
+        }
+
         // 衝突位置を取得
         ContactPoint contact = collision.contacts[0];
 
@@ -44,7 +57,7 @@ public class ArrowStick : MonoBehaviour
             rb.isKinematic = true;
         }
 
-        // 衝突したオブジェクトの子にする
+        // 衝突した敵の子オブジェクトにする
         transform.SetParent(collision.transform, true);
 
         // 矢の先端を衝突位置に合わせる
@@ -58,7 +71,7 @@ public class ArrowStick : MonoBehaviour
             transform.position = contact.point;
         }
 
-        // 発射時の角度を維持する
+        // 発射時の角度を維持
         transform.rotation = fixedRotation;
 
         // Rigidbodyを削除したい場合
@@ -66,5 +79,8 @@ public class ArrowStick : MonoBehaviour
         {
             Destroy(rb);
         }
+
+        // 矢を削除
+        Destroy(gameObject);
     }
 }

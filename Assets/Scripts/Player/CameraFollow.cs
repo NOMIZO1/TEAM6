@@ -13,6 +13,10 @@ public class CameraFollow : MonoBehaviour
     public Vector3 offset = new Vector3(0, 5, -5);
     public float followSpeed = 5f;
 
+    [Header("初期角度設定")]
+    public float initialAngleX = 20f;
+    public float initialAngleY = 0f;
+
     [Header("回転設定")]
     public float mouseSensitivity = 200f;
     public float minVerticalAngle = -30f;
@@ -29,18 +33,28 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        if (cameraRoot == null) return;
+        if (cameraRoot == null || target == null) return;
 
-        // 初期角度を保存
-        Vector3 angles = cameraRoot.eulerAngles;
+        rotationX = initialAngleX;
+        rotationY = initialAngleY;
 
-        rotationY = angles.y;
-        rotationX = angles.x;
+        initialRotationX = initialAngleX;
+        initialRotationY = initialAngleY;
 
-        initialRotationX = rotationX;
-        initialRotationY = rotationY;
+        // カメラの初期角度
+        cameraRoot.rotation = Quaternion.Euler(
+            rotationX,
+            rotationY,
+            0f
+        );
 
-        // マウスカーソルを固定
+        // プレイヤーの初期左右角度も合わせる
+        target.rotation = Quaternion.Euler(
+            0f,
+            rotationY,
+            0f
+        );
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -49,7 +63,7 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null || cameraRoot == null) return;
 
-        // ALTキーで視点を初期位置に戻す
+        // ALTキーで視点をリセット
         if (Input.GetKeyDown(resetViewKey))
         {
             rotationX = initialRotationX;
@@ -70,18 +84,24 @@ public class CameraFollow : MonoBehaviour
             maxVerticalAngle
         );
 
-        // 回転を反映
+        // カメラの回転
         cameraRoot.rotation = Quaternion.Euler(
             rotationX,
             rotationY,
             0f
         );
 
-        // カメラ位置を計算
+        // プレイヤーもカメラの左右角度に合わせる
+        target.rotation = Quaternion.Euler(
+            0f,
+            rotationY,
+            0f
+        );
+
+        // カメラ位置
         Vector3 desiredPosition =
             target.position + cameraRoot.rotation * offset;
 
-        // なめらかに追従
         transform.position = Vector3.Lerp(
             transform.position,
             desiredPosition,
@@ -92,5 +112,14 @@ public class CameraFollow : MonoBehaviour
         transform.LookAt(
             target.position + Vector3.up * 1.5f
         );
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
     }
 }

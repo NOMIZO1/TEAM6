@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour
+public class PlayerController1 : MonoBehaviour
 {
     [Header("ˆÚ“®İ’è")]
     public float moveSpeed = 3f;
