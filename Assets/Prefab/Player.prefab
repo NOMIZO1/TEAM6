@@ -998,12 +998,11 @@ MonoBehaviour:
   gravity: -9.8
   dashDelay: 1
   resetViewKey: 308
+  initialPlayerAngle: {x: 0, y: 0, z: 0}
   jumpHeight: 2
   jumpAnimation: Jump
   cameraRoot: {fileID: 0}
-  mouseSensitivity: 2
-  minCameraAngle: -60
-  maxCameraAngle: 60
+  cameraFollow: {fileID: 0}
   animator: {fileID: 4704948034241184959}
   idleAnimations:
   - Idle
