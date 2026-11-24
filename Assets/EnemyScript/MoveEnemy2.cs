@@ -33,6 +33,7 @@ public class MoveEnemy2 : MonoBehaviour
     //　プレイヤーTransform
     private Transform playerTransform;
 
+
     // Use this for initialization
     void Start()
     {

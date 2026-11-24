@@ -502,6 +502,7 @@ MonoBehaviour:
   m_Cameras: []
   m_RendererIndex: -1
   m_VolumeLayerMask:
+    serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
@@ -944,6 +945,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1182820602}
   - component: {fileID: 1182820605}
+  - component: {fileID: 1182820606}
   - component: {fileID: 1182820604}
   - component: {fileID: 1182820603}
   m_Layer: 5
@@ -1016,7 +1018,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1182820604}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1182820606}
+        m_TargetAssemblyTypeName: SceneChange, Assembly-CSharp
+        m_MethodName: ChangeScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1182820604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1055,6 +1069,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1182820601}
   m_CullTransparentMesh: 1
+--- !u!114 &1182820606
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1182820601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e90408c7d6fb46245964da73e4f86157, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextSceneName: Stage
 --- !u!1 &1626158738
 GameObject:
   m_ObjectHideFlags: 0
