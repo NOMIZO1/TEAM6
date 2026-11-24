@@ -40,8 +40,6 @@ public class EnemyController : MonoBehaviour
         //体力が０になったら
         if (hpSlider.value <= 0f)
         {
-            // オブジェクトを非アクティブ化
-            // this.gameObject.SetActive(false);
             this.GetComponent<MoveEnemy2>().walkSpeed = 0f;
             animator.SetFloat("Speed", 0.0f);
             animator.SetTrigger("Death");
