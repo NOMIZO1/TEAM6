@@ -1,0 +1,13 @@
+diff a/ProjectSettings/GraphicsSettings.asset b/ProjectSettings/GraphicsSettings.asset	(rejected hunks)
+@@ -58,5 +58,10 @@
+   m_AlbedoSwatchInfos: []
+   m_LightsUseLinearIntensity: 0
+   m_LightsUseColorTemperature: 0
++  m_DefaultRenderingLayerMask: 1
+   m_LogWhenShaderIsCompiled: 0
+-  m_AllowEnlightenSupportForUpgradedProject: 0
++  m_SRPDefaultSettings:
++    UnityEngine.Rendering.Universal.UniversalRenderPipeline: {fileID: 11400000, guid: c1fa6d634735f0a4294e196bd9a58dcf, type: 2}
++  m_LightProbeOutsideHullStrategy: 0
++  m_CameraRelativeLightCulling: 0
++  m_CameraRelativeShadowCulling: 0
