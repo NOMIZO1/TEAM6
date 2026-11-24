@@ -22,14 +22,11 @@ public class CameraFollow : MonoBehaviour
     public float minVerticalAngle = -30f;
     public float maxVerticalAngle = 60f;
 
-    [Header("視点リセット")]
-    public KeyCode resetViewKey = KeyCode.LeftAlt;
-
     private float rotationX;
     private float rotationY;
 
-    private float initialRotationX;
-    private float initialRotationY;
+    // 前回のプレイヤー角度
+    private float previousPlayerAngleY;
 
     void Start()
     {
@@ -38,19 +35,16 @@ public class CameraFollow : MonoBehaviour
         rotationX = initialAngleX;
         rotationY = initialAngleY;
 
-        initialRotationX = initialAngleX;
-        initialRotationY = initialAngleY;
-
-        // カメラの初期角度
-        cameraRoot.rotation = Quaternion.Euler(
-            rotationX,
+        target.rotation = Quaternion.Euler(
+            0f,
             rotationY,
             0f
         );
 
-        // プレイヤーの初期左右角度も合わせる
-        target.rotation = Quaternion.Euler(
-            0f,
+        previousPlayerAngleY = target.eulerAngles.y;
+
+        cameraRoot.rotation = Quaternion.Euler(
+            rotationX,
             rotationY,
             0f
         );
@@ -63,18 +57,12 @@ public class CameraFollow : MonoBehaviour
     {
         if (target == null || cameraRoot == null) return;
 
-        // ALTキーで視点をリセット
-        if (Input.GetKeyDown(resetViewKey))
-        {
-            rotationX = initialRotationX;
-            rotationY = initialRotationY;
-        }
+        // プレイヤーの現在のY軸角度を取得
+        rotationY = target.eulerAngles.y;
 
-        // マウス入力
-        float mouseX = Input.GetAxis("Mouse X");
+        // マウス操作で上下の角度だけ変更
         float mouseY = Input.GetAxis("Mouse Y");
 
-        rotationY += mouseX * mouseSensitivity * Time.deltaTime;
         rotationX -= mouseY * mouseSensitivity * Time.deltaTime;
 
         // 上下の回転制限
@@ -84,16 +72,9 @@ public class CameraFollow : MonoBehaviour
             maxVerticalAngle
         );
 
-        // カメラの回転
+        // カメラをプレイヤーの向きに合わせる
         cameraRoot.rotation = Quaternion.Euler(
             rotationX,
-            rotationY,
-            0f
-        );
-
-        // プレイヤーもカメラの左右角度に合わせる
-        target.rotation = Quaternion.Euler(
-            0f,
             rotationY,
             0f
         );
@@ -111,6 +92,20 @@ public class CameraFollow : MonoBehaviour
         // プレイヤーの少し上を見る
         transform.LookAt(
             target.position + Vector3.up * 1.5f
+        );
+    }
+    // PlayerControllerAから呼び出す
+    public void ResetCameraToPlayerAngle(float playerAngleY)
+    {
+        rotationY = playerAngleY;
+        rotationX = initialAngleX;
+
+        previousPlayerAngleY = playerAngleY;
+
+        cameraRoot.rotation = Quaternion.Euler(
+            rotationX,
+            rotationY,
+            0f
         );
     }
 

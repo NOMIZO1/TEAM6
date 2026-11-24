@@ -16,9 +16,11 @@ public class PlayerControllerA : MonoBehaviour
     private bool isDashing = false;
 
     [Header("視点リセット設定")]
+    [Header("視点リセット設定")]
     public KeyCode resetViewKey = KeyCode.LeftAlt;
-    private Quaternion initialPlayerRotation;
-    private Quaternion initialCameraRotation;
+
+    // Inspectorで指定するプレイヤーの初期角度
+    public Vector3 initialPlayerAngle = new Vector3(0f, 0f, 0f);
 
     [Header("ジャンプ設定")]
     public float jumpHeight = 2f;
@@ -28,11 +30,7 @@ public class PlayerControllerA : MonoBehaviour
 
     [Header("カメラ設定")]
     public Transform cameraRoot;
-    public float mouseSensitivity = 2f;
-    public float minCameraAngle = -60f;
-    public float maxCameraAngle = 60f;
-
-    [Header("アニメーション")]
+    public CameraFollow cameraFollow; [Header("アニメーション")]
     public Animator animator;
 
     [Header("待機アニメーション")]
@@ -58,19 +56,13 @@ public class PlayerControllerA : MonoBehaviour
         }
 
         // プレイヤーの初期角度を保存
-        initialPlayerRotation = transform.rotation;
+        // Inspectorで指定した初期角度を適用
+        // プレイヤーの初期角度を適用
+        transform.rotation = Quaternion.Euler(initialPlayerAngle);
 
-        if (cameraRoot != null)
+        if (cameraFollow != null)
         {
-            initialCameraRotation = cameraRoot.localRotation;
-
-            // カメラの初期上下角度を取得
-            cameraRotationX = cameraRoot.localEulerAngles.x;
-
-            if (cameraRotationX > 180f)
-            {
-                cameraRotationX -= 360f;
-            }
+            cameraFollow.ResetCameraToPlayerAngle(initialPlayerAngle.y);
         }
 
         // カーソルを固定
@@ -79,17 +71,20 @@ public class PlayerControllerA : MonoBehaviour
     }
     void Update()
     {
+        // ALTキーでプレイヤーとカメラを初期角度に戻す
+        if (Input.GetKeyDown(resetViewKey))
+        {
+            ResetPlayerRotation();
+        }
 
         PlayerMovement();
-
         Jump();
-
         IdleAnimation();
-
-
     }
-
-
+    void ResetPlayerRotation()
+    {
+        transform.rotation = Quaternion.Euler(initialPlayerAngle);
+    }
     // カメラとプレイヤーの回転
     // カメラとプレイヤーの回転
     // 移動とダッシュ
