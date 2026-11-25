@@ -864,7 +864,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
       propertyPath: m_Name
-      value: minotaur1 1
+      value: minotaur1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
       propertyPath: m_IsActive
@@ -1144,6 +1144,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4354451734551230100}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6692483764423563894}
   m_SourcePrefab: {fileID: 100100000, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
 --- !u!1 &8455586499669756482 stripped
 GameObject:
@@ -1237,6 +1240,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpSlider: {fileID: 4920564036485091458}
+  dropTable: {fileID: 0}
 --- !u!114 &81674511244255675
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1266,6 +1270,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 1
   waitTime: 5
+  attackRange: 2
+  attackCooldown: 1
 --- !u!114 &6988513548566131350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1290,6 +1296,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87751a04671e028498545f9366e690da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6692483764423563894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8455586499669756482}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2642be47a4ef26a4a9f8c19b6848d866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dropItems:
+  - item: {fileID: 11400000, guid: 5b1b7378382bb3644bfe4686cbde6ecf, type: 2}
+    dropChance: 40
+  - item: {fileID: 11400000, guid: 0e64bda2cec3aab47be868905fc7a99e, type: 2}
+    dropChance: 20
 --- !u!4 &9084771671257633016 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}

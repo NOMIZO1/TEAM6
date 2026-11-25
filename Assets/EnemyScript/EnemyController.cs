@@ -13,6 +13,7 @@ public class EnemyController : MonoBehaviour
     private int power = 30;
     private int exp = 5;
     private Animator animator;
+    public DropTable dropTable;
 
     // Start is called before the first frame update
     void Start()
@@ -29,6 +30,11 @@ public class EnemyController : MonoBehaviour
     {
         //プレイヤーの視点から体力バーが正面に見えるようにする
         GameObject.Find("Canvas").transform.LookAt(GameObject.Find("Player").transform);
+
+        if(Input.GetKeyUp(KeyCode.Space))
+        {
+            TakeDamage(100);
+        }
     }
 
     //ダメージを受けた時の処理
@@ -41,6 +47,7 @@ public class EnemyController : MonoBehaviour
         if (hpSlider.value <= 0f)
         {
             this.GetComponent<MoveEnemy2>().walkSpeed = 0f;
+            GetComponent<DropTable>().Drop();
             animator.SetFloat("Speed", 0.0f);
             animator.SetTrigger("Death");
         }

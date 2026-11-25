@@ -2452,6 +2452,14 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6692483764423563894, guid: 4507227651a98a24ea26781f56515dfa, type: 3}
+      propertyPath: dropItems.Array.data[0].dropChance
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6692483764423563894, guid: 4507227651a98a24ea26781f56515dfa, type: 3}
+      propertyPath: dropItems.Array.data[1].dropChance
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 8455586499669756482, guid: 4507227651a98a24ea26781f56515dfa, type: 3}
       propertyPath: m_Name
       value: minotaur1

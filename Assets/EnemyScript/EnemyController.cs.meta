@@ -3,7 +3,9 @@ guid: fdab195a44ff7a540814ac8fc0fe7637
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - hpSlider: {instanceID: 0}
+  - dropTable: {fileID: 11400000, guid: 4dc768b24ce939e49a1b1a021c708182, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
