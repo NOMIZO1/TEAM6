@@ -1,9 +1,13 @@
 
+
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerControllerA : MonoBehaviour
 {
+    [Header("強化(アップグレード)")]
+    public PlayerStats stats;
+
     [Header("移動設定")]
     public float moveSpeed = 3f;
     public float dashSpeed = 7f;
@@ -46,6 +50,8 @@ public class PlayerControllerA : MonoBehaviour
 
     private Vector2 movementInput;
 
+    
+
     void Start()
     {
         controller = GetComponent<CharacterController>();
@@ -71,6 +77,8 @@ public class PlayerControllerA : MonoBehaviour
     }
     void Update()
     {
+        if (Time.timeScale == 0f) return; // 選択画面などで止まっている間は、何もしない
+
         // ALTキーでプレイヤーとカメラを初期角度に戻す
         if (Input.GetKeyDown(resetViewKey))
         {
@@ -124,7 +132,9 @@ public class PlayerControllerA : MonoBehaviour
 
         verticalVelocity += gravity * Time.deltaTime;
 
-        Vector3 velocity = move * currentSpeed;
+        float speedMul = stats != null ? stats.moveSpeedMul : 1f;
+        if (Input.GetKeyDown(KeyCode.F1)) Debug.Log($"stats設定済み={stats != null}  倍率={speedMul}");
+        Vector3 velocity = move * currentSpeed * speedMul;
         velocity.y = verticalVelocity;
 
         controller.Move(velocity * Time.deltaTime);

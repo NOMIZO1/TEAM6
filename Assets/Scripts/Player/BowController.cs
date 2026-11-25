@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class BowController : MonoBehaviour
 {
+    [Header("強化(アップグレード)")]
+    [SerializeField] private PlayerStats stats;
+
     [Header("Animator設定")]
     [SerializeField] private Animator animator;
     [SerializeField] private string bowLayerName = "BowLayer";
@@ -142,6 +145,8 @@ public class BowController : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0f) return;
+
         // 左クリックで弓を構える
         if (Input.GetMouseButtonDown(0))
         {
@@ -257,7 +262,7 @@ public class BowController : MonoBehaviour
         // 一人称カメラに切り替え
         SetBowCamera(true);
 
-      
+
         // チャージ初期化
         chargeTime = 0f;
         chargeRate = 0f;
@@ -400,7 +405,7 @@ public class BowController : MonoBehaviour
 
     void UpdateCharge()
     {
-        chargeTime += Time.deltaTime;
+        chargeTime += Time.deltaTime * stats.ChargeSpeed;
 
         chargeRate = Mathf.Clamp01(chargeTime / maxChargeTime);
 
@@ -440,7 +445,7 @@ public class BowController : MonoBehaviour
         isReleasing = true;
 
         // 照準オブジェクトを非表示
-   
+
         // チャージゲージを非表示
         if (chargeGauge != null)
         {
@@ -476,59 +481,64 @@ public class BowController : MonoBehaviour
 
     void ShootArrow()
     {
-        if (loadedArrow == null)
-            return;
+        if (loadedArrow == null) return;
+        if (loadedArrow.GetComponent<Rigidbody>() == null) return;
 
-        Rigidbody rb = loadedArrow.GetComponent<Rigidbody>();
+        Vector3 spawnPos = loadedArrow.transform.position;
 
-        if (rb == null)
-            return;
-
-        loadedArrow.transform.SetParent(null);
-
-        rb.isKinematic = false;
-        rb.useGravity = true;
-
-        // 照準位置を取得
+        // 照準位置
         Vector3 targetPosition;
-
         if (aimMarker != null)
-        {
             targetPosition = aimMarker.transform.position;
-        }
         else
-        {
             targetPosition = firstPersonCamera.transform.position
                            + firstPersonCamera.transform.forward * maxArrowRange;
+
+        Vector3 direction = (targetPosition - spawnPos).normalized;
+
+        // 射程(チャージ量 × 強化の倍率)
+        float arrowRange = Mathf.Lerp(minArrowRange, maxArrowRange, chargeRate) * stats.rangeMul;
+        float speed = Mathf.Sqrt(2f * Mathf.Abs(Physics.gravity.y) * arrowRange);
+
+        // 1本目(構えていた矢)
+        FireArrow(loadedArrow, direction, speed);
+
+        // 連射の2本目以降(左右に少しずらす)
+        for (int i = 1; i < stats.arrowCount; i++)
+        {
+            float angle = (i % 2 == 1 ? 1f : -1f) * 4f * ((i + 1) / 2);
+            Vector3 dir = Quaternion.AngleAxis(angle, Vector3.up) * direction;
+            GameObject extra = Instantiate(arrowPrefab, spawnPos, Quaternion.identity);
+            FireArrow(extra, dir, speed);
         }
-
-        // 発射方向
-        Vector3 direction =
-            (targetPosition - loadedArrow.transform.position).normalized;
-
-        // チャージ量から射程距離を計算
-        float arrowRange = Mathf.Lerp(
-            minArrowRange,
-            maxArrowRange,
-            chargeRate
-        );
-
-        // 射程距離に応じて発射速度を計算
-        float arrowSpeed = Mathf.Sqrt(2f * Mathf.Abs(Physics.gravity.y) * arrowRange);
-
-        // 矢の向きを設定
-        loadedArrow.transform.rotation =
-            Quaternion.LookRotation(direction) *
-            Quaternion.Euler(arrowRotationOffset);
-
-        // 矢を発射
-        rb.AddForce(direction * arrowSpeed, ForceMode.VelocityChange);
-
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         loadedArrow = null;
         isArrowLoaded = false;
     }
+
+    // 矢1本を飛ばす(ダメージもここで渡す)
+    void FireArrow(GameObject arrow, Vector3 direction, float speed)
+    {
+        Rigidbody rb = arrow.GetComponent<Rigidbody>();
+        if (rb == null) return;
+
+        arrow.transform.SetParent(null);
+        rb.isKinematic = false;
+        rb.useGravity = true;
+
+        arrow.transform.rotation =
+            Quaternion.LookRotation(direction) * Quaternion.Euler(arrowRotationOffset);
+
+        ArrowStick stick = arrow.GetComponent<ArrowStick>();
+        if (stick != null) stick.Init(stats.Damage); // 攻撃力(強化・連射の威力)
+
+        rb.AddForce(direction * speed, ForceMode.VelocityChange);
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+    }
+
+
+
+
     // =====================================
     // 発射アニメーション
     // =====================================
@@ -622,6 +632,7 @@ public class BowController : MonoBehaviour
             Cursor.visible = true;
         }
     }
+
     // =====================================
     // カーソル設定
     // =====================================
@@ -688,3 +699,4 @@ public class BowController : MonoBehaviour
         SetNormalCursor();
     }
 }
+

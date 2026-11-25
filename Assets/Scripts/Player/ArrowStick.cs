@@ -23,6 +23,11 @@ public class ArrowStick : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
+    public void Init(float damage)
+    {
+        arrowDamage = damage;
+    }
+
     void OnCollisionEnter(Collision collision)
     {
         // ‚·‚Å‚Éh‚³‚Á‚Ä‚¢‚éê‡‚Í‰½‚à‚µ‚È‚¢
