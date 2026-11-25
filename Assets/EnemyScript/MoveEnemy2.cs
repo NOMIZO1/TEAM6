@@ -32,7 +32,12 @@ public class MoveEnemy2 : MonoBehaviour
     private EnemyState state;
     //　プレイヤーTransform
     private Transform playerTransform;
-
+    //攻撃範囲
+    public float attackRange = 2f;
+    //攻撃クールダウン
+    public float attackCooldown = 1f;
+    //攻撃時間
+    private float nextAttackTime = 0f;
     // Use this for initialization
     void Start()
     {
@@ -85,6 +90,14 @@ public class MoveEnemy2 : MonoBehaviour
         }
         velocity.y += Physics.gravity.y * Time.deltaTime;
         enemyController.Move(velocity * Time.deltaTime);
+
+        float distance = Vector3.Distance(transform.position, playerTransform.position);
+
+        if (distance < attackRange && Time.time >= nextAttackTime)
+        {
+            Attack();
+            nextAttackTime = Time.time + attackCooldown;
+        }
     }
 
     //　敵キャラクターの状態変更メソッド
@@ -113,5 +126,11 @@ public class MoveEnemy2 : MonoBehaviour
     public EnemyState GetState()
     {
         return state;
+    }
+
+    void Attack()
+    {
+        Debug.Log("敵が攻撃した！");
+        animator.SetTrigger("Attack");
     }
 }
