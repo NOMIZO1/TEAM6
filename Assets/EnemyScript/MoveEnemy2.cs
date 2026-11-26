@@ -80,6 +80,7 @@ public class MoveEnemy2 : MonoBehaviour
         }
         else if (state == EnemyState.Wait)
         {
+            animator.SetFloat("Speed", 0.0f);
             elapsedTime += Time.deltaTime;
 
             //@‘Ò‚¿ŠÔ‚ğ‰z‚¦‚½‚çŸ‚Ì–Ú“I’n‚ğİ’è

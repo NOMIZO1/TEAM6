@@ -7,6 +7,8 @@ public class EnemyController : MonoBehaviour
 {
     [SerializeField]
     public Slider hpSlider;
+    [SerializeField]
+    private MoveEnemy2 moveEnemy2;
 
     private float maxHP = 100f;
     private float currentHP;
@@ -48,7 +50,6 @@ public class EnemyController : MonoBehaviour
         {
             this.GetComponent<MoveEnemy2>().walkSpeed = 0f;
             GetComponent<DropTable>().Drop();
-            animator.SetFloat("Speed", 0.0f);
             animator.SetTrigger("Death");
         }
     }
