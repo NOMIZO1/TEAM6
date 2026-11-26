@@ -15,7 +15,10 @@ public class EnemyController : MonoBehaviour
     [Header("HP Slider‚ÌCanvas")]
     [SerializeField] private Transform hpCanvasTransform; private float currentHP;
     private int power = 30;
-    private int exp = 5;
+    [Header("ŒoŒ±’l")]
+    [SerializeField] private int exp = 5; // “G‚²‚Æ‚ÉPrefab‚Åİ’è(“G1:5A“G2:15A“G3:40)
+
+    public static event System.Action<int> onAnyEnemyDied;
 
     private Animator animator;
     private bool isDead = false;
@@ -70,6 +73,8 @@ public class EnemyController : MonoBehaviour
         if (currentHP <= 0f)
         {
             isDead = true;
+
+            onAnyEnemyDied?.Invoke(exp);
 
             MoveEnemy2 moveEnemy = GetComponent<MoveEnemy2>();
 
