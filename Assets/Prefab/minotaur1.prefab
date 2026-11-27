@@ -156,7 +156,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 5209560288615752623}
   m_HandleRect: {fileID: 0}
-  m_Direction: 0
+  m_Direction: 1
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 0
@@ -864,11 +864,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
       propertyPath: m_Name
-      value: minotaur1 1
+      value: minotaur1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
       objectReference: {fileID: 0}
     - target: {fileID: 1846256759547140760, guid: 63e974d9ec82619419e69ae2287be94e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1237,6 +1241,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpSlider: {fileID: 4920564036485091458}
+  maxHP: 100
+  mainCameraTransform: {fileID: 0}
+  hpCanvasTransform: {fileID: 0}
+  exp: 5
 --- !u!114 &81674511244255675
 MonoBehaviour:
   m_ObjectHideFlags: 0
