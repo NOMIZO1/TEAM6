@@ -15,6 +15,12 @@ public class ArrowStick : MonoBehaviour
     [Header("刺さったときの設定")]
     public bool destroyRigidbody = false;
 
+    [Header("属性エフェクト")]
+    [SerializeField] private GameObject fireEffect;
+    [SerializeField] private GameObject iceEffect;
+
+    private Element arrowElement = Element.None;
+
     private Rigidbody rb;
     private bool isStuck = false;
 
@@ -23,9 +29,17 @@ public class ArrowStick : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-    public void Init(float damage)
+    public void Init(float damage, Element element)
     {
         arrowDamage = damage;
+        SetElement(element);
+    }
+
+    public void SetElement(Element element)
+    {
+        arrowElement = element;
+        if (fireEffect != null) fireEffect.SetActive(element == Element.Fire);
+        if (iceEffect != null) iceEffect.SetActive(element == Element.Ice);
     }
 
     void OnCollisionEnter(Collision collision)
@@ -44,6 +58,7 @@ public class ArrowStick : MonoBehaviour
         if (enemy != null)
         {
             enemy.TakeDamage(arrowDamage);
+            enemy.ApplyElement(arrowElement, arrowDamage);
         }
 
         // 衝突位置を取得
@@ -88,4 +103,5 @@ public class ArrowStick : MonoBehaviour
         // 矢を削除
         Destroy(gameObject);
     }
+
 }
