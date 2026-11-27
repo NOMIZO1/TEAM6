@@ -156,7 +156,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 5209560288615752623}
   m_HandleRect: {fileID: 0}
-  m_Direction: 0
+  m_Direction: 1
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 0
@@ -1241,6 +1241,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hpSlider: {fileID: 4920564036485091458}
+  maxHP: 100
+  mainCameraTransform: {fileID: 0}
+  hpCanvasTransform: {fileID: 0}
+  exp: 5
 --- !u!114 &81674511244255675
 MonoBehaviour:
   m_ObjectHideFlags: 0
