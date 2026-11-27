@@ -32,11 +32,6 @@ public class EnemyController : MonoBehaviour
     {
         //プレイヤーの視点から体力バーが正面に見えるようにする
         GameObject.Find("Canvas").transform.LookAt(GameObject.Find("Player").transform);
-
-        if(Input.GetKeyUp(KeyCode.Space))
-        {
-            TakeDamage(100);
-        }
     }
 
     //ダメージを受けた時の処理
@@ -44,6 +39,7 @@ public class EnemyController : MonoBehaviour
     {
         currentHP-=damage;
         hpSlider.value = currentHP;
+        GetComponent<Search>().HasTrigger();
 
         //体力が０になったら
         if (hpSlider.value <= 0f)
