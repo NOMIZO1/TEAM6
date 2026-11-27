@@ -13,6 +13,9 @@ public class PlayerMouseRotation : MonoBehaviour
     [Header("回転の有効・無効")]
     public bool rotationEnabled = true;
 
+    [Header("操作停止キー")]
+    public KeyCode stopRotationKey = KeyCode.LeftAlt;
+
     private float rotationY;
 
     void Start()
@@ -39,6 +42,14 @@ public class PlayerMouseRotation : MonoBehaviour
         if (!rotationEnabled) return;
 
         if (player == null || mainCamera == null) return;
+
+        // ALTキーを長押ししている間は回転を停止
+        if (Input.GetKey(stopRotationKey))
+        {
+            // 現在のPlayerの角度を保持
+            rotationY = player.eulerAngles.y;
+            return;
+        }
 
         // マウスの左右移動量
         float mouseX = Input.GetAxis("Mouse X");

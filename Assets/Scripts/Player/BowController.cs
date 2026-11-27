@@ -23,6 +23,7 @@ public class BowController : MonoBehaviour
     [SerializeField]
     private Vector3 aimMarkerLocalPosition =
     new Vector3(0f, 0f, 10f);
+    [Header("カメラ切り替え設定")]
     [SerializeField] private float verticalRotationOffset = 0f;
     [SerializeField] private string bowReleaseAnimation = "Bow_Release";
     [SerializeField] private float readyAnimationSpeed = 1f;
@@ -59,8 +60,6 @@ public class BowController : MonoBehaviour
     [SerializeField] private Circular3DGauge aimGauge;
     [Header("カメラ設定")]
     [SerializeField] private Camera mainCamera;
-    [SerializeField] private Camera firstPersonCamera;
-    [SerializeField] private FirstPersonCameraController firstPersonController;
     [SerializeField] private CameraFollow mainCameraFollow;
 
     [Header("カーソル設定")]
@@ -93,10 +92,23 @@ public class BowController : MonoBehaviour
         {
             aimMarker.SetActive(false);
         }
-        // カメラ取得
+        if (mainCamera != null)
+        {
+            mainCamera.enabled = true;
+        }
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+        }
+
         if (aimCamera == null)
         {
-            aimCamera = firstPersonCamera;
+            aimCamera = mainCamera;
+        }
+
+        if (mainCameraFollow != null)
+        {
+            mainCameraFollow.enabled = true;
         }
 
         if (mainCamera == null)
@@ -135,7 +147,6 @@ public class BowController : MonoBehaviour
             aimMarker.SetActive(false);
         }
 
-        SetBowCamera(false);
 
         SetNormalCursor();
     }
@@ -187,48 +198,39 @@ public class BowController : MonoBehaviour
     // =====================================
     // カメラ・弓・矢・3D照準の角度と位置を同期
     // =====================================
-
     void LateUpdate()
     {
-        if (!isHoldingBow || firstPersonCamera == null)
+        if (!isHoldingBow || mainCamera == null)
             return;
 
-        Transform cam = firstPersonCamera.transform;
+        Transform cam = mainCamera.transform;
 
-        // カメラの上下・左右角度を取得
         float cameraPitch = cam.eulerAngles.x;
         float cameraYaw = cam.eulerAngles.y;
 
-        // -180～180度に変換
         if (cameraPitch > 180f)
         {
             cameraPitch -= 360f;
         }
 
-        // 上下角度の補正
         float pitch = cameraPitch + verticalRotationOffset;
 
-        // カメラと同じ角度を作成
         Quaternion aimRotation = Quaternion.Euler(
             pitch,
             cameraYaw,
             0f
         );
 
-        // AnchorPointを回転
         if (anchorPoint != null)
         {
             anchorPoint.rotation = aimRotation;
         }
 
-        // 3D照準をAnchorPoint基準で配置
         if (aimMarker != null && anchorPoint != null)
         {
-            // AnchorPointから見た固定位置をワールド座標に変換
             Vector3 markerPosition =
                 anchorPoint.TransformPoint(aimMarkerLocalPosition);
 
-            // AnchorPointと同じ角度にする
             Quaternion markerRotation =
                 anchorPoint.rotation *
                 Quaternion.Euler(aimMarkerRotationOffset);
@@ -238,8 +240,7 @@ public class BowController : MonoBehaviour
                 markerRotation
             );
         }
-    }
-    // =====================================
+    }    // =====================================
     // 弓を構える
     // =====================================
 
@@ -255,9 +256,8 @@ public class BowController : MonoBehaviour
         isArrowLoaded = false;
 
         // 一人称カメラに切り替え
-        SetBowCamera(true);
+        Debug.Log("BowController: 一人称カメラに切り替え");
 
-      
         // チャージ初期化
         chargeTime = 0f;
         chargeRate = 0f;
@@ -460,8 +460,6 @@ public class BowController : MonoBehaviour
             ShootArrow();
         }
 
-        // カメラを戻す
-        SetBowCamera(false);
 
         // カーソルを戻す
         SetNormalCursor();
@@ -498,8 +496,8 @@ public class BowController : MonoBehaviour
         }
         else
         {
-            targetPosition = firstPersonCamera.transform.position
-                           + firstPersonCamera.transform.forward * maxArrowRange;
+            targetPosition = mainCamera.transform.position
+                           + mainCamera.transform.forward * maxArrowRange;
         }
 
         // 発射方向
@@ -567,61 +565,6 @@ public class BowController : MonoBehaviour
     // カメラ切り替え
     // =====================================
 
-    void SetBowCamera(bool firstPerson)
-    {
-        if (mainCamera != null)
-        {
-            mainCamera.enabled = !firstPerson;
-
-            AudioListener listener =
-                mainCamera.GetComponent<AudioListener>();
-
-            if (listener != null)
-            {
-                listener.enabled = !firstPerson;
-            }
-        }
-
-        if (firstPersonCamera != null)
-        {
-            firstPersonCamera.enabled = firstPerson;
-
-            AudioListener listener =
-                firstPersonCamera.GetComponent<AudioListener>();
-
-            if (listener != null)
-            {
-                listener.enabled = firstPerson;
-            }
-        }
-
-        if (mainCameraFollow != null)
-        {
-            mainCameraFollow.enabled = !firstPerson;
-        }
-
-        if (firstPersonController != null)
-        {
-            firstPersonController.SetActiveCamera(firstPerson);
-        }
-
-        // 一人称視点に切り替えたときだけ3D照準を表示
-        if (aimMarker != null)
-        {
-            aimMarker.SetActive(firstPerson);
-        }
-
-        if (firstPerson)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-    }
     // =====================================
     // カーソル設定
     // =====================================

@@ -71,10 +71,33 @@ public class PlayerControllerA : MonoBehaviour
     }
     void Update()
     {
-        // ALTキーでプレイヤーとカメラを初期角度に戻す
+        // ALTキーを押している間は移動を無効化
+        bool isAltHolding = Input.GetKey(resetViewKey);
+
+        // ALTキーを押した瞬間に初期角度へ戻す
         if (Input.GetKeyDown(resetViewKey))
         {
             ResetPlayerRotation();
+        }
+
+        // ALTキーを押している間は移動・ジャンプを停止
+        if (isAltHolding)
+        {
+            movementInput = Vector2.zero;
+            moveHoldTimer = 0f;
+            isDashing = false;
+            verticalVelocity = 0f;
+
+            if (animator != null)
+            {
+                animator.SetFloat("Horizontal", 0f);
+                animator.SetFloat("Vertical", 0f);
+                animator.SetFloat("Speed", 0f);
+                animator.SetBool("IsMoving", false);
+                animator.SetBool("IsDashing", false);
+            }
+
+            return;
         }
 
         PlayerMovement();
