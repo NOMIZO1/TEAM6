@@ -1,44 +1,69 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField]
+    [Header("HP Slider")]
     public Slider hpSlider;
     [SerializeField]
     private MoveEnemy2 moveEnemy2;
 
-    private float maxHP = 100f;
-    private float currentHP;
+    [Header("HP設定")]
+    [SerializeField] private float maxHP = 100f;
+    [Header("カメラ設定")]
+    [SerializeField] private Transform mainCameraTransform;
+
+    [Header("HP SliderのCanvas")]
+    [SerializeField] private Transform hpCanvasTransform; private float currentHP;
     private int power = 30;
     private int exp = 5;
+
     private Animator animator;
+    private bool isDead = false;
     public DropTable dropTable;
 
-    // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
-        currentHP =maxHP;
 
-        hpSlider.maxValue=maxHP;
-        hpSlider.value = currentHP;
+        currentHP = maxHP;
+
+        if (hpSlider != null)
+        {
+            hpSlider.maxValue = maxHP;
+            hpSlider.value = currentHP;
+        }
+
     }
 
-    // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        //プレイヤーの視点から体力バーが正面に見えるようにする
-        GameObject.Find("Canvas").transform.LookAt(GameObject.Find("Player").transform);
-    }
+        if (hpCanvasTransform == null || mainCameraTransform == null)
+            return;
 
-    //ダメージを受けた時の処理
+        // Canvasからカメラへの方向を取得
+        Vector3 direction =
+            mainCameraTransform.position - hpCanvasTransform.position;
+
+        // 上下方向の角度を変更しない
+        direction.y = 0f;
+
+        if (direction.sqrMagnitude > 0.001f)
+        {
+            // Canvas全体の角度だけ変更
+            hpCanvasTransform.rotation =
+                Quaternion.LookRotation(-direction);
+        }
+    }
+    // ダメージ処理
     public void TakeDamage(float damage)
     {
-        currentHP-=damage;
-        hpSlider.value = currentHP;
+        if (isDead) return;
+
+        currentHP -= damage;
+        currentHP = Mathf.Max(0f, currentHP);
+
         GetComponent<Search>().HasTrigger();
 
         //体力が０になったら
@@ -50,7 +75,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    //倒れた後にフェードアウト
+    // 倒れた後にフェードアウト
     public void OnAnimationEnd()
     {
         GetComponent<Fade>().FadeOut();
