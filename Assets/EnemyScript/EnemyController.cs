@@ -6,6 +6,8 @@ public class EnemyController : MonoBehaviour
 {
     [Header("HP Slider")]
     public Slider hpSlider;
+    [SerializeField]
+    private MoveEnemy2 moveEnemy2;
 
     [Header("HPê›íË")]
     [SerializeField] private float maxHP = 100f;
@@ -24,6 +26,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float slowDuration = 3f;   // ì›ë´ÇÃéûä‘
     [SerializeField] private float slowMul = 0.5f;      // à⁄ìÆë¨ìxÇÃî{ó¶
 
+    [SerializeField] private GameObject burnEffect;
+
     private Coroutine burnCo, slowCo;
     private float baseWalkSpeed = -1f;
 
@@ -31,10 +35,13 @@ public class EnemyController : MonoBehaviour
 
     private Animator animator;
     private bool isDead = false;
+    public DropTable dropTable;
 
     void Start()
     {
         animator = GetComponent<Animator>();
+
+        currentHP = maxHP;
 
         currentHP = maxHP;
 
@@ -85,6 +92,9 @@ public class EnemyController : MonoBehaviour
 
             onAnyEnemyDied?.Invoke(exp);
 
+            if (burnCo != null) StopCoroutine(burnCo);
+            if (burnEffect != null) burnEffect.SetActive(false);
+
             MoveEnemy2 moveEnemy = GetComponent<MoveEnemy2>();
 
             if (moveEnemy != null)
@@ -119,12 +129,16 @@ public class EnemyController : MonoBehaviour
 
     System.Collections.IEnumerator Burn(float dmgPerSec)
     {
+        if (burnEffect != null) burnEffect.SetActive(true);   // îRÇ¶énÇﬂ
+
         for (float t = 0f; t < burnDuration; t += 1f)
         {
             yield return new WaitForSeconds(1f);
-            if (isDead) yield break;
+            if (isDead) break;
             TakeDamage(dmgPerSec);
         }
+
+        if (burnEffect != null) burnEffect.SetActive(false);  // îRÇ¶èIÇÌÇË
     }
 
     System.Collections.IEnumerator Slow()

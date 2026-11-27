@@ -488,9 +488,13 @@ public class BowController : MonoBehaviour
 
         // è∆èÄà íu
         Vector3 targetPosition;
+
         if (aimMarker != null)
+        {
             targetPosition = aimMarker.transform.position;
+        }
         else
+        {
             targetPosition = firstPersonCamera.transform.position
                            + firstPersonCamera.transform.forward * maxArrowRange;
 
@@ -534,6 +538,9 @@ public class BowController : MonoBehaviour
 
         rb.AddForce(direction * speed, ForceMode.VelocityChange);
         rb.constraints = RigidbodyConstraints.FreezeRotation;
+
+        loadedArrow = null;
+        isArrowLoaded = false;
     }
 
 
