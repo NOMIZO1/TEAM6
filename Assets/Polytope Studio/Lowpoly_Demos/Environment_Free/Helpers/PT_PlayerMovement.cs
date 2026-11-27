@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
@@ -13,6 +14,9 @@ public class PT_PlayerMovement : MonoBehaviour
     public float speed = 3;
     public float gravity = -9.18f;
     public float jumpHeight = 3f;
+    [SerializeField, Header("体力")]
+    public int HP = 50;
+    public Slider slider;//ＨＰバー用のスライダー
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
@@ -20,6 +24,15 @@ public class PT_PlayerMovement : MonoBehaviour
 
     Vector3 velocity;
     bool isGrounded;
+
+    [SerializeField, Header("ダメージ数の表示")]
+    private GameObject DamageObj;
+
+    [SerializeField]
+    private Transform PosObj;
+
+    [SerializeField]
+    private Vector3 AdjPos;
 
     void Update()
     {
@@ -70,5 +83,26 @@ public class PT_PlayerMovement : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    public void Damage(int damage)//ダメージ判定
+    {
+        HP-= damage;
+        if(slider !=null)
+        {
+            slider.value=HP;//ＨＰバー
+        }
+
+        
+        ViewDamage(damage);//ダメージを受けた数字を表示
+    }
+
+    private void ViewDamage(int damage)
+    {
+        GameObject damageObj = Instantiate(DamageObj);
+        damageObj.GetComponent<TextMesh>().text = damage.ToString()+" Hit";
+        damageObj.transform.position = PosObj.transform.position + AdjPos;
+        // 生成時の向きを固定
+        damageObj.transform.rotation = Camera.main.transform.rotation;
     }
 }
