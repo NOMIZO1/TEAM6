@@ -530,7 +530,7 @@ public class BowController : MonoBehaviour
             Quaternion.LookRotation(direction) * Quaternion.Euler(arrowRotationOffset);
 
         ArrowStick stick = arrow.GetComponent<ArrowStick>();
-        if (stick != null) stick.Init(stats.Damage); // 攻撃力(強化・連射の威力)
+        if (stick != null) stick.Init(stats.Damage, stats.element); // 攻撃力(強化・連射の威力)
 
         rb.AddForce(direction * speed, ForceMode.VelocityChange);
         rb.constraints = RigidbodyConstraints.FreezeRotation;
