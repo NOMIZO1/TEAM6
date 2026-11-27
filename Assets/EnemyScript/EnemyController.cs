@@ -6,6 +6,8 @@ public class EnemyController : MonoBehaviour
 {
     [Header("HP Slider")]
     public Slider hpSlider;
+    [SerializeField]
+    private MoveEnemy2 moveEnemy2;
 
     [Header("HPê›íË")]
     [SerializeField] private float maxHP = 100f;
@@ -33,10 +35,13 @@ public class EnemyController : MonoBehaviour
 
     private Animator animator;
     private bool isDead = false;
+    public DropTable dropTable;
 
     void Start()
     {
         animator = GetComponent<Animator>();
+
+        currentHP = maxHP;
 
         currentHP = maxHP;
 
