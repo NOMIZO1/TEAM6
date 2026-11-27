@@ -32,7 +32,19 @@ public class PlayerControllerA : MonoBehaviour
     public Transform cameraRoot;
     public CameraFollow cameraFollow; [Header("アニメーション")]
     public Animator animator;
+    [Header("足音設定")]
+    public AudioSource footstepAudioSource;
+    public AudioClip footstepClip;
 
+    [Header("足音の再生間隔")]
+    public float walkStepInterval = 0.5f;
+    public float dashStepInterval = 0.3f;
+
+    [Header("足音の音量")]
+    [Range(0f, 1f)]
+    public float footstepVolume = 0.7f;
+
+    private float footstepTimer = 0f;
     [Header("待機アニメーション")]
     public string[] idleAnimations;
     public float idleWaitTime = 5f;
@@ -49,7 +61,11 @@ public class PlayerControllerA : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
-
+        // 足音用AudioSourceを取得
+        if (footstepAudioSource == null)
+        {
+            footstepAudioSource = GetComponent<AudioSource>();
+        }
         if (animator == null)
         {
             animator = GetComponentInChildren<Animator>();
@@ -79,14 +95,14 @@ public class PlayerControllerA : MonoBehaviour
         {
             ResetPlayerRotation();
         }
-
-        // ALTキーを押している間は移動・ジャンプを停止
         if (isAltHolding)
         {
             movementInput = Vector2.zero;
             moveHoldTimer = 0f;
             isDashing = false;
             verticalVelocity = 0f;
+
+            StopFootsteps();
 
             if (animator != null)
             {
@@ -103,6 +119,50 @@ public class PlayerControllerA : MonoBehaviour
         PlayerMovement();
         Jump();
         IdleAnimation();
+        UpdateFootsteps();
+    }
+    // 足音の更新
+    void UpdateFootsteps()
+    {
+        if (footstepAudioSource == null || footstepClip == null)
+            return;
+
+        // 移動していない、またはジャンプ中・空中の場合
+        if (movementInput.sqrMagnitude < 0.01f ||
+            isJumping ||
+            !controller.isGrounded)
+        {
+            StopFootsteps();
+            return;
+        }
+
+        // 歩きとダッシュで足音の間隔を変更
+        float interval = isDashing
+            ? dashStepInterval
+            : walkStepInterval;
+
+        footstepTimer += Time.deltaTime;
+
+        if (footstepTimer >= interval)
+        {
+            footstepAudioSource.PlayOneShot(
+                footstepClip,
+                footstepVolume
+            );
+
+            footstepTimer = 0f;
+        }
+    }
+
+    // 足音停止
+    void StopFootsteps()
+    {
+        footstepTimer = 0f;
+
+        if (footstepAudioSource != null)
+        {
+            footstepAudioSource.Stop();
+        }
     }
     void ResetPlayerRotation()
     {

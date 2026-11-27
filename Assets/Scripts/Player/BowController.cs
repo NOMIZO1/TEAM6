@@ -17,6 +17,11 @@ public class BowController : MonoBehaviour
         "Bow_Ready_02",
         "Bow_Ready_03"
     };
+    [Header("–î‚Ì”­ËŒø‰Ê‰¹")]
+    [SerializeField] private AudioSource arrowAudioSource;
+    [SerializeField] private AudioClip arrowShootSE;
+    [Range(0f, 1f)]
+    [SerializeField] private float arrowShootVolume = 1f;
     [Header("–î‚Ìã‰ºŠp“x’²®")]
     [SerializeField] private Transform anchorPoint;
     [Header("3DÆ€‚ÆAnchorPoint‚ÌˆÊ’uŠÖŒW")]
@@ -149,6 +154,11 @@ public class BowController : MonoBehaviour
 
 
         SetNormalCursor();
+        // Œø‰Ê‰¹—pAudioSource‚ğæ“¾
+        if (arrowAudioSource == null)
+        {
+            arrowAudioSource = GetComponent<AudioSource>();
+        }
     }
 
     void Update()
@@ -476,7 +486,15 @@ public class BowController : MonoBehaviour
     {
         if (loadedArrow == null)
             return;
-
+        // –î‚ğ”­Ë
+        // –î‚Ì”­ËŒø‰Ê‰¹
+        if (arrowAudioSource != null && arrowShootSE != null)
+        {
+            arrowAudioSource.PlayOneShot(
+                arrowShootSE,
+                arrowShootVolume
+            );
+        }
         Rigidbody rb = loadedArrow.GetComponent<Rigidbody>();
 
         if (rb == null)
@@ -521,7 +539,14 @@ public class BowController : MonoBehaviour
 
         // –î‚ğ”­Ë
         rb.AddForce(direction * arrowSpeed, ForceMode.VelocityChange);
-
+        // –î‚Ì”­ËŒø‰Ê‰¹
+        if (arrowAudioSource != null && arrowShootSE != null)
+        {
+            arrowAudioSource.PlayOneShot(
+                arrowShootSE,
+                arrowShootVolume
+            );
+        }
         rb.constraints = RigidbodyConstraints.FreezeRotation;
 
         loadedArrow = null;
