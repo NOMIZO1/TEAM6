@@ -25,6 +25,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float slowMul = 0.5f;      // 移動速度の倍率
 
     [SerializeField] private GameObject burnEffect;
+    [SerializeField] private GameObject frostEffect;
 
     private Coroutine burnCo, slowCo;
     private float baseWalkSpeed = -1f;
@@ -89,6 +90,9 @@ public class EnemyController : MonoBehaviour
 
             if (burnCo != null) StopCoroutine(burnCo);
             if (burnEffect != null) burnEffect.SetActive(false);
+            if (slowCo != null) StopCoroutine(slowCo);
+            if (frostEffect != null) frostEffect.SetActive(false);
+            if (animator != null) animator.speed = 1f; 
 
             MoveEnemy2 moveEnemy = GetComponent<MoveEnemy2>();
 
@@ -143,10 +147,15 @@ public class EnemyController : MonoBehaviour
 
         if (baseWalkSpeed < 0f) baseWalkSpeed = move.walkSpeed; // 元の速度を、最初の1回だけ控える
         move.walkSpeed = baseWalkSpeed * slowMul;
+        if (animator != null) animator.speed = slowMul;          
+        if (frostEffect != null) frostEffect.SetActive(true);
 
         yield return new WaitForSeconds(slowDuration);
 
-        if (!isDead) move.walkSpeed = baseWalkSpeed;            // 死んでいたら、0のままにする
+        if (isDead) yield break;                                 // 死んでいたら、何も戻さない
+        move.walkSpeed = baseWalkSpeed;
+        if (animator != null) animator.speed = 1f;
+        if (frostEffect != null) frostEffect.SetActive(false);            
     }
 
     // 倒れた後にフェードアウト
